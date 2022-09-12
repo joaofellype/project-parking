@@ -25,6 +25,7 @@ export class CarService {
 
   async findAll(): Promise<ListCarDto[]> {
     const car = await this.carModel.find();
+
     const carDto = car.map(c => ListCarDto.create(c.model, c.color, c.plate, c.desc, ListUserDto.create(c.user.id, c.user.name, c.user.number, c.user.email)));
     return carDto;
   }
@@ -33,20 +34,31 @@ export class CarService {
     const car = await this.carModel.findById({ _id: id }).exec();
     return ListCarDto.create(car.model, car.color, car.plate, car.desc, ListUserDto.create(car.user.id, car.user.name, car.user.number, car.user.email))
   }
+  
+  async findQrCode(qrcode:string){
+
+    const car = await this.carModel.findOne({ qrcode: qrcode});
+    if(car == null || car == undefined){
+      throw new NotFoundException("Veículo não encontrado")
+    }
+    return ListCarDto.create(car.model, car.color, car.plate, car.desc, ListUserDto.create(car.user.id, car.user.name, car.user.number, car.user.email))
+ 
+  }
 
   async update(id: string, updateCarDto: UpdateCarDto) {
 
     return await this.carModel.updateOne({ _id: id }, updateCarDto);
   }
 
-
   async remove(id: string) {
-    await this.carModel.findByIdAndUpdate({ _id: id })
-    return `This action removes a #${id} car`;
+   
+    return  await this.carModel.findByIdAndDelete({ _id: id });
   }
+
   async createQrCodeCar(id: string):Promise<QRCodeDto> {
 
-    const car = await this.carModel.findById({ _id: id });
+    console.log(id)
+    const car = await this.carModel.findById({ _id: id }).exec();
     if(!car){
       throw new NotFoundException("Veiculo nao encontrado");
     }
@@ -64,7 +76,7 @@ export class CarService {
 
 
   }
-  async generateQR(text: string):Promise<string> {
+ private async generateQR(text: string):Promise<string> {
     try {
       return await toDataURL(text);
     } catch (err) {

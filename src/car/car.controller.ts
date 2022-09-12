@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ListUserDto } from 'src/users/dto/list-user.dto';
 import { CarService } from './car.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { ListCarDto } from './dto/listCar-car.dto';
@@ -18,14 +17,16 @@ export class CarController {
 
   @Get()
  async findAll():Promise<ListCarDto[]> {
-
- 
     return this.carService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string):Promise<ListCarDto>{
     return this.carService.findOne(id);
+  }
+  @Get("/qrcode/:qrcode")
+  async findQrcode(@Param('qrcode') qrcode:string) {
+    return this.carService.findQrCode(qrcode);
   }
   @Get('/generate-qrcode/:id')
   async generateQrCode(@Param('id') id:string):Promise<QRCodeDto>{
