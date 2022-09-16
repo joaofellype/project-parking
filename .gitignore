@@ -5,6 +5,8 @@
 /redis
 .env
 
+/src/config/development.env
+/src/config/production.env
 # Logs
 logs
 *.log
