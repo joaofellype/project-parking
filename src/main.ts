@@ -17,7 +17,7 @@ async function bootstrap() {
   SwaggerModule.setup('api',app,document) 
   app.useGlobalPipes(new ValidationPipe());
  // app.enableCors();
-  await app.listen(3000,() =>{
+  await app.listen(process.env.PORT || 3000,() =>{
     console.log(`Running in ${configu.get('environment')} mode`)
     console.log("dfdfdfdfdfdf "+process.env.REDIS_PORT)
 
